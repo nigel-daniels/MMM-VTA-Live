@@ -94,12 +94,19 @@ Module.register('MMM-VTA-Live', {
 					routeTimes.className = 'vta_times normal';
 
 					var timeText = new String();
+					var arriving = false;
 
                     for (var i=0; i < entry.times.length; i++) {
-						var nextArrival = entry.times[i] <= 1 ? 'Arriving' : entry.times[i];
-                        timeText = timeText.concat(nextArrival);
-						if (i+1 < entry.times.length) {timeText = timeText.concat(', ');}
+						if (entry.times[i] <= 1)
+							{arriving = true;}
+						else
+							{timeText = timeText.concat(entry.times[i]);}
+
+						if ((i+1 < entry.times.length) && (timeText.length > 0)) {timeText = timeText.concat(', ');}
                         }
+
+					if (arriving)
+						{timeText = timeText.length > 0 ? 'Arriving, ' + timeText : 'Arriving';}
 
 					routeTimes.innerHTML = timeText === 'Arriving' ? timeText : timeText + ' mins';
 
