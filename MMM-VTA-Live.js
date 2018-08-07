@@ -98,7 +98,7 @@ Module.register('MMM-VTA-Live', {
                     for (var i=0; i < entry.times.length; i++) {
 						var nextArrival = entry.times[i] <= 1 ? 'Arriving' : entry.times[i];
                         timeText = timeText.concat(nextArrival);
-						if (i < entry.times.length) {timeText = timeText.concat(', ');}
+						if (i+1 < entry.times.length) {timeText = timeText.concat(', ');}
                         }
 
 					routeTimes.innerHTML = timeText === 'Arriving' ? timeText : timeText + ' mins';
