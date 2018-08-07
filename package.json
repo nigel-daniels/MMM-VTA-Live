@@ -1,0 +1,29 @@
+{
+          "name": "MMM-VTA-Live",
+          "version": "1.0.0",
+          "description": "MagicMirror 2 module to show the live arrival times of a stop on the VTA light rail system.",
+          "repository": {
+                    "type": "git",
+                    "url": "git+https://github.com/nigel-daniels/MMM-VTA-Live"
+          },
+          "keywords": [
+                    "magic mirror",
+                    "smart mirror",
+                    "VTA",
+                    "transit",
+                    "live",
+                    "arrivals",
+                    "module"
+          ],
+          "author": "Nigel Daniels",
+          "contributors": "https://github.com/nigel-daniels/MMM-VTA-Live/graphs/contributors",
+          "license": "MIT",
+          "bugs": {
+                    "url": "https://github.com/nigel-daniels/MMM-VTA-Live/issues"
+          },
+          "homepage": "https://github.com/nigel-daniels/MMM-VTA-Live#readme",
+          "dependencies": {
+                    "moment": "^2.22.2",
+                    "request": "latest"
+          }
+}
