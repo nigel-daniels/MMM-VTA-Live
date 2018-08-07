@@ -16,11 +16,11 @@ module.exports = NodeHelper.create({
 
         // Set up the local values
 		this.routes = new Map();
-        this.result = new Map();
+        this.arrivalCache = new Map();
         },
 
 
-    getTransLocRoutes: function(payload) {
+    getVTARoutes: function(payload) {
 
 		this.agency_id = payload.agency_id;
         var _this = this;
@@ -65,7 +65,7 @@ module.exports = NodeHelper.create({
         },
 
 
-	getTransLocData: function(payload) {
+	getVTAData: function(payload) {
         var _this = this;
 
 		var reqOptions = {
@@ -88,25 +88,51 @@ module.exports = NodeHelper.create({
 				var arrivals = result.data[0].arrivals;
 				var now = moment(result.generated_on);
 
-				// Now go thru the arrivals and build an entry or add times to an entry in the map.
-				for (var i = 0; i < arrivals.length; i++) {
-					var arrives = vtaResult.get(arrivals[i].route_id);
+				// First clear out the arrival cache of any arrivals that happened before now
+				for (var [key,value] of _this.arrivalCache) {
+					var arrival = moment(value.arrival_at);
 
-					if (arrives === undefined) {
-						var mins = _this.durationInMins(now, arrivals[i].arrival_at);
-						var arrives = {
-								route: _this.routes.get(arrivals[i].route_id),
-								times: [mins]
+					if (arrival.isBefore(result.generated_on)) {
+						_this.arrivalCache.delete(key);
+						}
+					}
+
+				// Now populate the arrival cache
+				for (var i = 0; i < arrivals.length; i++) {
+					var arrival = _this.arrivalCache.get(arrivals[i].vehicle_id);
+
+					if (arrival === undefined) {
+						var newArrival = {
+							route_id: 	arrivals[i].route_id,
+							arrival_at:	arrivals[i].arrival_at
 							}
 
-						vtaResult.set(arrivals[i].route_id, arrives);
+						_this.arrivalCache.set(arrivals[i].vehicle_id, newArrival);
 					} else {
-						var mins = _this.durationInMins(now, arrivals[i].arrival_at);
+						arrival.arrival_at = arrivals[i].arrival_at;
+
+						_this.arrivalCache.set(arrivals[i].vehicle_id, arrival);
+						}
+					}
+
+				// Now go thru the arrival cache and build the response.
+				for (var [key,arrival] of _this.arrivalCache) {
+					var arrives = vtaResult.get(arrival.route_id);
+
+					if (arrives === undefined) {
+						var mins = _this.durationInMins(now, arrival.arrival_at);
+						var arrives = {
+							route: _this.routes.get(arrival.route_id),
+							times: [mins]
+							}
+
+						vtaResult.set(arrival.route_id, arrives);
+					} else {
+						var mins = _this.durationInMins(now, arrival.arrival_at);
 
 						arrives.times.push(mins);
 
-						vtaResult.set(arrivals[i].route_id, arrives);
-
+						vtaResult.set(arrival.route_id, arrives);
 						}
 					}
 				}
@@ -120,7 +146,7 @@ module.exports = NodeHelper.create({
 		var time = moment(endTime);
 		var duration = moment.duration(time.diff(startTime));
 		return Math.round(duration.asMinutes());
-	},
+		},
 
 	mapToObj: function(map) {
     	let obj = {};
@@ -130,16 +156,16 @@ module.exports = NodeHelper.create({
     		});
 
     	return obj;
-	},
+		},
 
     socketNotificationReceived: function(notification, payload) {
         // Check this is for us and if it is let's get the routes or the data
         switch(notification) {
 			case 'GET-VTA-ROUTES':
-				this.getTransLocRoutes(payload);
+				this.getVTARoutes(payload);
 				break;
 			case 'GET-VTA-DATA':
-				this.getTransLocData(payload);
+				this.getVTAData(payload);
 				break;
 			default:
 				break;

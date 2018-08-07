@@ -1,6 +1,6 @@
 {
           "name": "MMM-VTA-Live",
-          "version": "1.0.0",
+          "version": "1.0.1",
           "description": "MagicMirror 2 module to show the live arrival times at a stop on the VTA light rail system.",
           "repository": {
                     "type": "git",

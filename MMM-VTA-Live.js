@@ -38,7 +38,7 @@ Module.register('MMM-VTA-Live', {
         this.result = null;
 
         // Trigger the first request
-        this.getTransLocRoutes(this);
+        this.getVTARoutes(this);
         },
 
 
@@ -47,17 +47,17 @@ Module.register('MMM-VTA-Live', {
         },
 
 
-    getTransLocRoutes: function(_this) {
+    getVTARoutes: function(_this) {
         // Make the initial request to the helper then set up the timer to perform the updates
 		_this.sendSocketNotification('GET-VTA-ROUTES', _this.routeReq);
-		setTimeout(_this.getTransLocRoutes, _this.DAY, _this);
+		setTimeout(_this.getVTARoutes, _this.DAY, _this);
 
         },
 
-	getTransLocData: function(_this) {
+	getVTAData: function(_this) {
 		// Make the initial request to the helper then set up the timer to perform the updates
 		_this.sendSocketNotification('GET-VTA-DATA', _this.dataReq);
-		setTimeout(_this.getTransLocData, _this.config.interval, _this);
+		setTimeout(_this.getVTAData, _this.config.interval, _this);
 		},
 
     getDom: function() {
@@ -129,7 +129,7 @@ Module.register('MMM-VTA-Live', {
 
 		if (notification === 'GOT-VTA-ROUTES' && payload.url === this.routeReq.url) {
 			// We got the routes cached for the day so now we can get the data
-			this.getTransLocData(this);
+			this.getVTAData(this);
 			}
 
 		if (notification === 'GOT-VTA-DATA' && payload.url === this.dataReq.url) {
