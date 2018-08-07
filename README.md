@@ -1,5 +1,5 @@
 # MMM-VTA-Live
-![Arrival Times](tube.png "Arrival times.")
+![VTA Live](vta-live.png "VTA Live.")
 
 This a module for the [MagicMirror](https://github.com/MichMich/MagicMirror/tree/develop).   This module shows the arrival times for your local stop on the VTA Light Rail system in the Santa Clara, CA area (see below).
 
