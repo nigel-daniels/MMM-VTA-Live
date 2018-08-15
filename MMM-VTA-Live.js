@@ -79,7 +79,7 @@ Module.register('MMM-VTA-Live', {
 					var entry = this.result[key];
 
                     routeRow = document.createElement('tr');
-					routeRow.className = 'vta_data';
+					routeRow.className = 'vta_data vta_route';
 
                     routeSName = document.createElement('td');
                     routeSName.className = 'vta_sname';
@@ -90,6 +90,11 @@ Module.register('MMM-VTA-Live', {
                     routeLName.className = 'vta_lname normal';
                     routeLName.innerHTML = entry.route.long_name;
 
+					arrivalRow = document.createElement('tr');
+					arrivalRow.className = 'vta_data vta_arrivals';
+
+					routeBlank = document.createElement('td');
+
                     routeTimes = document.createElement('td');
 					routeTimes.className = 'vta_times normal';
 
@@ -99,15 +104,18 @@ Module.register('MMM-VTA-Live', {
 
 					if (filteredTimes.length !== entry.times.length)
 						{timeText = filteredTimes.length > 0 ? 'Arriving, ' + timeText : 'Arriving';}
-					
+
 					routeTimes.innerHTML = timeText === 'Arriving' ? timeText : timeText + ' mins';
 
 
                     routeRow.appendChild(routeSName);
                     routeRow.appendChild(routeLName);
-					routeRow.appendChild(routeTimes);
+
+					arrivalRow.appendChild(routeBlank)
+					arrivalRow.appendChild(routeTimes);
 
 					routeResults.appendChild(routeRow);
+					routeResults.appendChild(arrivalRow);
                     }
 				wrapper.appendChild(stopName)
 	            wrapper.appendChild(routeResults);

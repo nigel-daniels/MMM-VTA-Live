@@ -1,12 +1,19 @@
+.vta_result {
+	padding-top: 10px;
+}
+
 .vta_stop {
 	font-size: 20px;
 }
+
 .vta_data {
 	font-size: 16px;
 }
-.vta_sname {
-	padding-right: 10px;
+
+.vta_route{
+	line-height: 20px;
 }
-.vta_lname {
+
+.vta_sname {
 	padding-right: 10px;
 }
