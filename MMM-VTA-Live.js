@@ -18,10 +18,6 @@ Module.register('MMM-VTA-Live', {
     start:  function() {
         Log.log('Starting module: ' + this.name);
 
-        if (this.data.classes === 'MMM-VTA-Live') {
-            this.data.classes = 'bright medium';
-            }
-
         // Set up the local values, here we construct the request url to use
 		this.DAY = 86400000;
         this.loaded = false;
@@ -63,7 +59,8 @@ Module.register('MMM-VTA-Live', {
     getDom: function() {
         // Set up the local wrapper
         var wrapper = document.createElement('div');
-
+		wrapper.class = 'bright medium';
+		
         // If we have some data to display then build the results table
         if (this.loaded) {
 			stopName = document.createElement('div');
