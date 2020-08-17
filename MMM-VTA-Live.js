@@ -9,7 +9,8 @@ Module.register('MMM-VTA-Live', {
 
     defaults: {
             api_key:   '',
-            stop_id:   0,
+			agency:		'SC',
+            stop_code:   0,
 			stop_name:	'???',
             interval:  60000 // Every min
         },
@@ -19,35 +20,22 @@ Module.register('MMM-VTA-Live', {
         Log.log('Starting module: ' + this.name);
 
         // Set up the local values, here we construct the request url to use
-		this.DAY = 86400000;
         this.loaded = false;
-        this.routeReq = {
-			api_key: 	this.config.api_key,
-			agency_id:	255,
-			url:		'https://transloc-api-1-2.p.mashape.com/routes.json?agencies=255'
-		};
+
 		this.dataReq = {
 			api_key: 	this.config.api_key,
-			url:		'https://transloc-api-1-2.p.mashape.com/arrival-estimates.json?agencies=255&stops=' + this.config.stop_id
+			url:		'http://api.511.org/transit/StopMonitoring?api_key=' + this.config.api_key + '&agency=' + this.config.agency + '&stopcode=' + this.config.stop_code + '&format=json'
 		};
         this.location = '';
         this.result = null;
 
         // Trigger the first request
-        this.getVTARoutes(this);
+        this.getVTAData(this);
         },
 
 
     getStyles: function() {
         return ['vta-live.css', 'font-awesome.css'];
-        },
-
-
-    getVTARoutes: function(_this) {
-        // Make the initial request to the helper then set up the timer to perform the updates
-		_this.sendSocketNotification('GET-VTA-ROUTES', _this.routeReq);
-		setTimeout(_this.getVTARoutes, _this.DAY, _this);
-
         },
 
 	getVTAData: function(_this) {
@@ -60,7 +48,7 @@ Module.register('MMM-VTA-Live', {
         // Set up the local wrapper
         var wrapper = document.createElement('div');
 		wrapper.class = 'bright medium';
-		
+
         // If we have some data to display then build the results table
         if (this.loaded) {
 			stopName = document.createElement('div');
@@ -71,21 +59,21 @@ Module.register('MMM-VTA-Live', {
 			routeResults.className = 'vta_result bright';
 
             if (this.result !== null) {
-
 				for (var key in this.result) {
-					var entry = this.result[key];
+					var name = this.result[key][0];
+					var entry = this.result[key].slice(1);
 
                     routeRow = document.createElement('tr');
 					routeRow.className = 'vta_data vta_route';
 
                     routeSName = document.createElement('td');
                     routeSName.className = 'vta_sname';
-					routeSName.setAttribute('style', ('color:#' + entry.route.color));
-                    routeSName.innerHTML = entry.route.short_name;
+					//routeSName.setAttribute('style', ('color:#' + entry.route.color));
+                    routeSName.innerHTML = key;
 
 					routeLName = document.createElement('td');
                     routeLName.className = 'vta_lname normal';
-                    routeLName.innerHTML = entry.route.long_name;
+                    routeLName.innerHTML = name;
 
 					arrivalRow = document.createElement('tr');
 					arrivalRow.className = 'vta_data vta_arrivals';
@@ -95,11 +83,11 @@ Module.register('MMM-VTA-Live', {
                     routeTimes = document.createElement('td');
 					routeTimes.className = 'vta_times normal';
 
-					var filteredTimes = entry.times.filter(this.arrivalFilter);
+					var filteredTimes = entry.filter(this.arrivalFilter);
 					filteredTimes.sort(this.sortAscending);
 					var timeText = filteredTimes.join(', ');
 
-					if (filteredTimes.length !== entry.times.length)
+					if (filteredTimes.length !== entry.length)
 						{timeText = filteredTimes.length > 0 ? 'Arriving, ' + timeText : 'Arriving';}
 
 					routeTimes.innerHTML = timeText === 'Arriving' ? timeText : timeText + ' mins';
@@ -138,15 +126,11 @@ Module.register('MMM-VTA-Live', {
 
     socketNotificationReceived: function(notification, payload) {
 
-		if (notification === 'GOT-VTA-ROUTES' && payload.url === this.routeReq.url) {
-			// We got the routes cached for the day so now we can get the data
-			this.getVTAData(this);
-			}
-
 		if (notification === 'GOT-VTA-DATA' && payload.url === this.dataReq.url) {
             // we got some data so set the flag, stash the data to display then request the dom update
             this.loaded = true;
             this.result = payload.result;
+			console.log('result: ' + payload.result);
             this.updateDom(1000);
             }
         }

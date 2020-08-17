@@ -23,7 +23,7 @@
           },
           "homepage": "https://github.com/nigel-daniels/MMM-VTA-Live#readme",
           "dependencies": {
-                    "moment": "^2.22.2",
-                    "request": "latest"
+                    "moment": "^2.27.0",
+                    "urllib": "^2.36.1"
           }
 }
