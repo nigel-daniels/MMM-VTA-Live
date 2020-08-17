@@ -3,6 +3,10 @@
 
 This a module for the [MagicMirror](https://github.com/MichMich/MagicMirror/tree/develop). This module shows the arrival times for your local stop for any of the services in the Bay Area, CA monitored by 511.org (see below). This used an older API that only monitored the VTA, hence the name.
 
+![511.org](511SFBay_color_web.png "511.org")
+
+Data provided by 511.org
+
 ## Installation
 1. Navigate into your MagicMirror's `modules` folder and execute `git clone https://github.com/nigel-daniels/MMM-VTA-Live`.  A new folder `MMM-VTA-Live` will appear, navigate into it.
 2. Execute `npm install` to install the node dependencies.
