@@ -10,7 +10,7 @@ Module.register('MMM-VTA-Live', {
     defaults: {
             api_key:   '',
 			agency:		'SC',
-            stop_code:   0,
+            stop_code:   '',
 			stop_name:	'???',
             interval:  60000 // Every min
         },
